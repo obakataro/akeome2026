@@ -31,18 +31,39 @@
             </div>
         </section>
 
+        <section id="section-kane" class="hidden">
+            <h2>煩悩退散！除夜の鐘</h2>
+            <div class="kane-game-area">
+                <div class="score-board">
+                    <p>残り時間: <span id="kane-time">10</span>秒</p>
+                    <p>回数: <span id="kane-score">0</span>回</p>
+                    <p class="high-score">ハイスコア: <span id="kane-highscore">0</span></p>
+                </div>
+                
+                <div id="kane-bell-wrapper">
+                    <button id="btn-hit-kane" disabled>鐘を突く！</button>
+                    <div id="bell-visual">🔔</div>
+                </div>
+
+                <div class="game-controls">
+                    <button id="btn-start-kane">ゲーム開始</button>
+                </div>
+            </div>
+        </section>
+
         <section id="section-omikuji" class="hidden">
             <h2>新春 おみくじ</h2>
             <div class="omikuji-container">
-                <div id="omikuji-box" class="shaking-box">
-                    🥠
-                </div>
+                <div id="omikuji-box" class="shaking-box">🥠</div>
                 <button id="btn-draw-omikuji">おみくじを引く</button>
                 
-                <div id="omikuji-result" class="hidden">
-                    <h3>あなたの運勢は…</h3>
-                    <p id="result-text" class="result-big">大吉</p>
-                    <p id="result-detail">願望：叶うでしょう<br>待人：来ます</p>
+                <div id="omikuji-result-area" class="hidden">
+                    <div class="canvas-wrapper">
+                        <canvas id="omikuji-canvas" width="300" height="400"></canvas>
+                    </div>
+                    <p id="omikuji-text-fallback"></p>
+                    <button id="btn-download-omikuji" class="secondary-btn">結果を保存する</button>
+                    <button id="btn-retry-omikuji" style="margin-top:10px;">もう一度引く</button>
                 </div>
             </div>
         </section>
@@ -70,6 +91,7 @@
 
     <nav class="bottom-nav">
         <button onclick="switchTab('section-home')">🏠 本殿</button>
+        <button onclick="switchTab('section-kane')">🔔 鐘つき</button>
         <button onclick="switchTab('section-omikuji')">🥠 おみくじ</button>
         <button onclick="switchTab('section-ema')">🐴 絵馬</button>
     </nav>
