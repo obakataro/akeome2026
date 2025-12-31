@@ -1,5 +1,5 @@
 /* ================================
-   1. セクションを切り替える
+   1. セクション切り替え
    ================================ */
 function switchTab(sectionId) {
     document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
@@ -34,7 +34,7 @@ setInterval(updateCountdown, 1000);
 updateCountdown();
 
 /* ================================
-   3. 除夜の鐘（スマホ最適化）
+   3. 除夜の鐘
    ================================ */
 let bellCount = 0;
 let isPlaying = false;
@@ -47,11 +47,8 @@ const kaneVisual = document.getElementById('kane-visual');
 function handleTap(e) {
     if (!isPlaying) return;
     if (e.cancelable) e.preventDefault();
-    
     bellCount++;
     document.getElementById('kane-count').innerText = bellCount;
-
-    // アニメーション
     kaneVisual.classList.remove('kane-shake');
     void kaneVisual.offsetWidth;
     kaneVisual.classList.add('kane-shake');
@@ -66,7 +63,7 @@ document.getElementById('btn-start-kane').addEventListener('click', function() {
     isPlaying = true;
     this.style.display = 'none';
     document.getElementById('kane-count').innerText = "0";
-    
+
     timerId = setInterval(() => {
         timeLeft--;
         document.getElementById('time-left').innerText = timeLeft;
@@ -90,50 +87,89 @@ const kujiData = [
     {t:"末吉", d:"焦らずゆっくり進むのが吉です。"}
 ];
 
+const omikujiBox = document.getElementById('omikuji-box');
+const omikujiResultArea = document.getElementById('omikuji-result-area');
+const omikujiCanvas = document.getElementById('omikuji-canvas');
+const omikujiCtx = omikujiCanvas.getContext('2d');
+const omikujiFallback = document.getElementById('omikuji-text-fallback');
+
+function drawOmikuji(res) {
+    omikujiCtx.clearRect(0,0,300,400);
+    omikujiCtx.fillStyle = '#fff4e6';
+    omikujiCtx.fillRect(0,0,300,400);
+    omikujiCtx.fillStyle = '#c9171e';
+    omikujiCtx.font = 'bold 40px "Noto Serif JP"';
+    omikujiCtx.textAlign = 'center';
+    omikujiCtx.fillText(res.t, 150, 150);
+    omikujiCtx.fillStyle = '#333';
+    omikujiCtx.font = '18px "Noto Serif JP"';
+    wrapText(omikujiCtx, res.d, 150, 200, 260, 25);
+    omikujiFallback.innerText = `${res.t} - ${res.d}`;
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+    const words = text.split('');
+    let line = '';
+    let lines = [];
+    for(let n = 0; n < words.length; n++) {
+        const testLine = line + words[n];
+        const metrics = ctx.measureText(testLine);
+        if(metrics.width > maxWidth && n > 0){
+            lines.push(line);
+            line = words[n];
+        } else {
+            line = testLine;
+        }
+    }
+    lines.push(line);
+    for(let i=0;i<lines.length;i++){
+        ctx.fillText(lines[i], x, y + i*lineHeight);
+    }
+}
+
 document.getElementById('btn-draw-omikuji').addEventListener('click', () => {
     const res = kujiData[Math.floor(Math.random() * kujiData.length)];
-    document.getElementById('result-text').innerText = res.t;
-    document.getElementById('result-detail').innerText = res.d;
-    document.getElementById('omikuji-result').classList.remove('hidden');
+    omikujiResultArea.classList.remove('hidden');
+    drawOmikuji(res);
+});
+
+document.getElementById('btn-retry-omikuji').addEventListener('click', () => {
+    omikujiResultArea.classList.add('hidden');
 });
 
 /* ================================
-   5. 絵馬作成 (Canvas)
+   5. 絵馬作成
    ================================ */
-const canvas = document.getElementById('ema-canvas');
-const ctx = canvas.getContext('2d');
+const emaCanvas = document.getElementById('ema-canvas');
+const emaCtx = emaCanvas.getContext('2d');
 
-function drawEma(wish = '願い事を入力', name = '') {
-    // 背景
-    ctx.fillStyle = '#f5e6c8';
-    ctx.fillRect(0, 0, 400, 300);
-    // 枠
-    ctx.strokeStyle = '#8c5e26';
-    ctx.lineWidth = 15;
-    ctx.strokeRect(0, 0, 400, 300);
-    // テキスト
-    ctx.fillStyle = '#333';
-    ctx.textAlign = 'center';
-    ctx.font = 'bold 30px "Noto Serif JP"';
-    ctx.fillText(wish, 200, 140);
-    ctx.font = '20px "Noto Serif JP"';
-    ctx.fillText(name ? `奉納者：${name}` : "", 200, 240);
-    // ロゴ
-    ctx.fillStyle = '#c9171e';
-    ctx.font = 'italic 16px serif';
-    ctx.fillText('真似亞神社', 330, 280);
+function drawEma(wish='願い事を入力', name='') {
+    emaCtx.fillStyle = '#f5e6c8';
+    emaCtx.fillRect(0,0,400,300);
+    emaCtx.strokeStyle = '#8c5e26';
+    emaCtx.lineWidth = 15;
+    emaCtx.strokeRect(0,0,400,300);
+    emaCtx.fillStyle = '#333';
+    emaCtx.textAlign = 'center';
+    emaCtx.font = 'bold 30px "Noto Serif JP"';
+    emaCtx.fillText(wish,200,140);
+    emaCtx.font = '20px "Noto Serif JP"';
+    emaCtx.fillText(name ? `奉納者：${name}` : "", 200, 240);
+    emaCtx.fillStyle = '#c9171e';
+    emaCtx.font = 'italic 16px serif';
+    emaCtx.fillText('真似亞神社', 330, 280);
 }
 drawEma();
 
 document.getElementById('btn-create-ema').addEventListener('click', () => {
     const w = document.getElementById('ema-wish').value;
     const n = document.getElementById('ema-name').value;
-    drawEma(w, n);
+    drawEma(w,n);
 });
 
 document.getElementById('btn-download-ema').addEventListener('click', () => {
     const link = document.createElement('a');
     link.download = 'ema.png';
-    link.href = canvas.toDataURL();
+    link.href = emaCanvas.toDataURL();
     link.click();
 });
