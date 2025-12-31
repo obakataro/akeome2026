@@ -1,8 +1,9 @@
 :root {
-    --primary-red: #c9171e; /* 和風の赤 */
+    --primary-red: #c9171e;
     --primary-gold: #d4af37;
     --bg-dark: #1a1a2e;
     --text-white: #fefefe;
+    --wood-color: #8b5a2b;
 }
 
 body {
@@ -13,22 +14,19 @@ body {
     color: var(--text-white);
     text-align: center;
     overflow-x: hidden;
-    padding-bottom: 80px; /* ナビゲーション分 */
+    padding-bottom: 80px;
 }
 
-/* ヘッダー */
 header {
     background: linear-gradient(to bottom, #000, transparent);
     padding: 20px;
 }
-
 header h1 {
     margin: 0;
     color: var(--primary-gold);
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
-/* セクション制御 */
 section {
     padding: 20px;
     min-height: 60vh;
@@ -38,10 +36,7 @@ section {
     align-items: center;
     animation: fadeIn 0.5s ease;
 }
-
-.hidden {
-    display: none !important;
-}
+.hidden { display: none !important; }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -55,83 +50,85 @@ section {
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.6);
 }
-
-#countdown-timer {
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 20px 0;
-}
-
+#countdown-timer { font-size: 2rem; font-weight: bold; margin: 20px 0; }
 #countdown-timer span {
-    color: var(--primary-red);
-    font-size: 3rem;
-    background: #fff;
-    padding: 0 10px;
-    border-radius: 5px;
-    margin: 0 5px;
+    color: var(--primary-red); font-size: 3rem; background: #fff;
+    padding: 0 10px; border-radius: 5px; margin: 0 5px;
 }
 
-/* おみくじ */
-.omikuji-container {
+/* --- 【NEW】除夜の鐘ゲーム --- */
+.kane-game-area {
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+}
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+.high-score { color: var(--primary-gold); }
+
+#bell-visual {
+    font-size: 8rem;
+    margin: 20px 0;
+    transition: transform 0.1s;
+    user-select: none;
+}
+.bell-hit-anim {
+    transform: scale(1.2) rotate(5deg);
+    color: var(--primary-gold);
+}
+
+#btn-hit-kane {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: radial-gradient(circle, #553311, #2a1a0a);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    border: 5px solid var(--primary-gold);
+    position: absolute;
+    opacity: 0; /* 見た目は透明にしてbell-visualの上に重ねる */
+    cursor: pointer;
+}
+/* タッチデバイスでの反応を良くするためにラッパーで重ねる */
+#kane-bell-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+}
+#btn-hit-kane:active + #bell-visual {
+    transform: scale(0.9);
+}
+
+/* --- おみくじ & 絵馬 --- */
+.omikuji-container, .ema-editor {
     background: rgba(255, 255, 255, 0.1);
     padding: 30px;
     border-radius: 15px;
     width: 90%;
     max-width: 400px;
 }
-
-#omikuji-box {
-    font-size: 4rem;
-    margin-bottom: 20px;
-}
-
-.result-big {
-    font-size: 3rem;
-    color: var(--primary-red);
-    font-weight: bold;
-    background: #fff;
-    display: inline-block;
-    padding: 10px 30px;
-    border-radius: 10px;
-}
-
-/* 絵馬 */
-.ema-editor {
-    margin-bottom: 20px;
-    width: 90%;
-    max-width: 400px;
-}
-
-.input-group {
-    margin-bottom: 10px;
-    text-align: left;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.9rem;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    font-family: 'Noto Serif JP', serif;
-}
+#omikuji-box { font-size: 4rem; margin-bottom: 20px; }
 
 .canvas-wrapper {
     margin: 20px auto;
-    border: 5px solid var(--primary-gold);
+    border: 3px solid var(--primary-gold);
     display: inline-block;
+    background: #fff;
 }
+canvas { max-width: 100%; height: auto; display: block; }
 
-canvas {
-    max-width: 100%;
-    height: auto;
-    background: #fff; /* デフォルト背景 */
-}
+.input-group { margin-bottom: 10px; text-align: left; }
+.input-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; }
+input { width: 100%; padding: 10px; border-radius: 5px; border: none; font-family: 'Noto Serif JP', serif; }
 
 /* ボタン共通 */
 button {
@@ -146,11 +143,8 @@ button {
     transition: transform 0.1s;
     box-shadow: 0 4px 0 #900;
 }
-
-button:active {
-    transform: translateY(4px);
-    box-shadow: none;
-}
+button:active { transform: translateY(4px); box-shadow: none; }
+button:disabled { background: #555; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
 
 .secondary-btn {
     background: var(--primary-gold);
@@ -161,52 +155,35 @@ button:active {
 /* 下部ナビゲーション */
 .bottom-nav {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    bottom: 0; left: 0; width: 100%;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
     border-top: 1px solid var(--primary-gold);
+    z-index: 100;
 }
-
 .bottom-nav button {
-    background: transparent;
-    box-shadow: none;
-    font-size: 0.9rem;
-    padding: 5px;
+    background: transparent; box-shadow: none; font-size: 0.8rem; padding: 5px;
 }
 
-.bottom-nav button:active {
-    transform: none;
-    color: var(--primary-gold);
-}
-
-/* スマホ対応 */
-@media (max-width: 600px) {
-    #countdown-timer span { font-size: 2rem; }
-    .result-big { font-size: 2.5rem; }
-}
-
-/* 雪のアニメーション（簡易版） */
+/* 雪アニメーション */
 .snow-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none;
     background-image: 
         radial-gradient(4px 4px at 100px 50px, #fff, transparent), 
-        radial-gradient(6px 6px at 200px 150px, #fff, transparent), 
-        radial-gradient(3px 3px at 300px 250px, #fff, transparent);
+        radial-gradient(6px 6px at 200px 150px, #fff, transparent);
     background-size: 200px 200px;
     animation: snow 3s linear infinite;
     opacity: 0.3;
 }
-
 @keyframes snow {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 50px 200px, 0 200px, -50px 200px; }
+    0% { background-position: 0 0, 0 0; }
+    100% { background-position: 50px 200px, 0 200px; }
+}
+
+/* レスポンシブ */
+@media (max-width: 600px) {
+    #countdown-timer span { font-size: 2rem; }
 }
