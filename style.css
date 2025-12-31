@@ -1,171 +1,122 @@
-:root {
-    --primary-red: #c9171e;    /* 鮮やかな和の赤 */
-    --deep-red: #800000;       /* 深みのある赤（グラデ用） */
-    --platinum: #e5e4e2;       /* 白金色（テキスト・差し色） */
-    --gold: #d4af37;           /* 金（アクセント） */
-    --bg-black: #1a0505;       /* 漆黒に近い赤黒 */
+body{
+    margin:0;
+    font-family:'Noto Serif JP', serif;
+    background:#fff8f0;
+    color:#333;
 }
 
-/* 全体設定 */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Noto Serif JP', serif;
-    background-color: var(--bg-black);
-    color: var(--platinum);
-    text-align: center;
-    overflow-x: hidden;
-    padding-bottom: 100px;
+header{
+    text-align:center;
+    padding:20px 0;
+    background:#ffe4c4;
 }
 
-/* 背景：雪のアニメーション */
-.snow-container {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 1;
-    background-image: 
-        radial-gradient(4px 4px at 100px 50px, #fff, transparent), 
-        radial-gradient(6px 6px at 200px 150px, #fff, transparent);
-    background-size: 300px 300px;
-    animation: snow 10s linear infinite;
-}
-@keyframes snow {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 600px; }
+header h1{
+    margin:0;
+    font-size:2.2rem;
+    color:#c9171e;
 }
 
-/* ヘッダー */
-header {
-    background: linear-gradient(to bottom, var(--primary-red), var(--deep-red));
-    padding: 25px;
-    border-bottom: 3px solid var(--gold);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+main{
+    padding:20px;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    letter-spacing: 0.2rem;
-    color: var(--platinum);
-    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+.hidden{
+    display:none;
 }
 
-/* セクション制御 */
-section {
-    padding: 30px 15px;
-    min-height: 70vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: fadeIn 0.6s ease-out;
-}
-.hidden { display: none !important; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.countdown-box{
+    text-align:center;
+    background:#fff4e6;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* カウントダウン */
-.countdown-box {
-    background: rgba(128, 0, 0, 0.4);
-    border: 1px solid var(--gold);
-    padding: 40px 20px;
-    border-radius: 5px;
-    box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.2);
-}
-#countdown-timer { font-size: 1.8rem; margin: 25px 0; }
-#countdown-timer span {
-    color: var(--primary-red);
-    background: var(--platinum);
-    padding: 5px 12px;
-    border-radius: 3px;
-    font-weight: bold;
-    margin: 0 4px;
-    box-shadow: 0 4px 0 var(--gold);
+.countdown-box h2{
+    margin-bottom:10px;
 }
 
-/* 鐘つきゲーム（スマホ最適化） */
-#kane-touch-area {
-    position: relative;
-    width: 280px;
-    height: 280px;
-    margin: 20px auto;
-    background: radial-gradient(circle, rgba(201, 23, 30, 0.3) 0%, transparent 70%);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
+.countdown-box span{
+    font-size:1.5rem;
+    font-weight:bold;
 }
-#kane-visual { font-size: 100px; cursor: pointer; transition: transform 0.05s; }
-.kane-shake { animation: bell-ring 0.1s ease; }
-@keyframes bell-ring {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1) rotate(5deg); }
-    100% { transform: scale(1); }
+
+.bottom-nav{
+    display:flex;
+    justify-content:space-around;
+    padding:10px 0;
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#fff4e6;
+    border-top:2px solid #c9171e;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    background:#c9171e;
+    color:white;
+    font-size:1rem;
+    cursor:pointer;
+}
+
+button.secondary-btn{
+    background:#8c5e26;
+}
+
+button:hover{
+    opacity:0.8;
+}
+
+/* ゲーム用 */
+#kane-touch-area{
+    text-align:center;
+    margin:20px 0;
+}
+
+#kane-visual{
+    font-size:80px;
+    display:inline-block;
+    transition: transform 0.1s;
+}
+
+.kane-shake{
+    transform: rotate(-20deg);
 }
 
 /* おみくじ */
-.result-big {
-    font-size: 3.5rem;
-    color: var(--primary-red);
-    background: var(--platinum);
-    padding: 15px 40px;
-    border: 4px double var(--gold);
-    margin: 20px 0;
+.omikuji-container{
+    text-align:center;
 }
 
-/* 絵馬 Canvas */
-.canvas-wrapper {
-    background: white;
-    padding: 5px;
-    border: 4px solid var(--gold);
-    margin-top: 15px;
-    max-width: 100%;
+.shaking-box{
+    font-size:80px;
+    display:inline-block;
+    animation:shake 0.5s infinite;
+    cursor:pointer;
 }
-canvas { max-width: 100%; height: auto; }
 
-/* 入力・ボタン */
-input {
-    background: var(--platinum);
-    border: 1px solid var(--gold);
-    padding: 12px;
-    width: 80%;
-    margin-bottom: 15px;
-    font-family: inherit;
+@keyframes shake{
+    0%{transform:rotate(0deg);}
+    25%{transform:rotate(15deg);}
+    50%{transform:rotate(-15deg);}
+    75%{transform:rotate(15deg);}
+    100%{transform:rotate(0deg);}
 }
-button {
-    background: linear-gradient(135deg, var(--primary-red), var(--deep-red));
-    color: var(--platinum);
-    border: 1px solid var(--gold);
-    padding: 15px 35px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #500;
-    margin: 10px;
-}
-button:active { transform: translateY(3px); box-shadow: none; }
 
-/* 下部ナビゲーション */
-.bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; width: 100%;
-    background: var(--deep-red);
-    display: flex;
-    justify-content: space-around;
-    padding: 15px 0;
-    border-top: 2px solid var(--gold);
-    z-index: 100;
-}
-.bottom-nav button {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    font-size: 0.8rem;
-    padding: 5px;
-    margin: 0;
+/* 雪 */
+.snow-container{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    background-image: url('https://i.imgur.com/jk5FbGn.png'); /* 小さな雪のPNGを繰り返す */
+    background-repeat:repeat;
+    opacity:0.1;
 }
