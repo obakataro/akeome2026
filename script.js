@@ -1,5 +1,5 @@
 /* ================================
-   1. セクション切り替え
+   1. セクションを切り替える
    ================================ */
 function switchTab(sectionId) {
     document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
