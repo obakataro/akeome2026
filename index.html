@@ -31,25 +31,24 @@
             </div>
         </section>
 
-        <section id="section-kane" class="hidden">
-            <h2>煩悩退散！除夜の鐘</h2>
-            <div class="kane-game-area">
-                <div class="score-board">
-                    <p>残り時間: <span id="kane-time">10</span>秒</p>
-                    <p>回数: <span id="kane-score">0</span>回</p>
-                    <p class="high-score">ハイスコア: <span id="kane-highscore">0</span></p>
-                </div>
-                
-                <div id="kane-bell-wrapper">
-                    <button id="btn-hit-kane" disabled>鐘を突く！</button>
-                    <div id="bell-visual">🔔</div>
-                </div>
+     <section id="section-kane" class="hidden">
+    <div class="game-info">
+        <h2>除夜の鐘 煩悩払い</h2>
+        <p>108回を目指して画面を叩け！</p>
+        <div class="score-display">
+            <span id="kane-count">0</span> / 108
+        </div>
+        <div id="game-timer">残り: <span id="time-left">20</span>秒</div>
+    </div>
 
-                <div class="game-controls">
-                    <button id="btn-start-kane">ゲーム開始</button>
-                </div>
-            </div>
-        </section>
+    <div id="kane-touch-area">
+        <div id="kane-visual">🔔</div>
+        <div class="tap-guide">ここをタップ！</div>
+    </div>
+
+    <button id="btn-start-kane">修行開始</button>
+</section>
+
 
         <section id="section-omikuji" class="hidden">
             <h2>新春 おみくじ</h2>
