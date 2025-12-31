@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真似亞神社 お正月記念サイト</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="snow-container"></div>
+
+    <header>
+        <h1>真似亞神社</h1>
+    </header>
+
+    <main>
+        <section id="section-home" class="active-section">
+            <div class="countdown-box">
+                <h2>新年の幕開けまで</h2>
+                <div id="countdown-timer">
+                    <span id="days">00</span>日
+                    <span id="hours">00</span>時間
+                    <span id="minutes">00</span>分
+                    <span id="seconds">00</span>秒
+                </div>
+                <p class="message">素敵な一年になりますように</p>
+            </div>
+        </section>
+
+        <section id="section-omikuji" class="hidden">
+            <h2>新春 おみくじ</h2>
+            <div class="omikuji-container">
+                <div id="omikuji-box" class="shaking-box">
+                    🥠
+                </div>
+                <button id="btn-draw-omikuji">おみくじを引く</button>
+                
+                <div id="omikuji-result" class="hidden">
+                    <h3>あなたの運勢は…</h3>
+                    <p id="result-text" class="result-big">大吉</p>
+                    <p id="result-detail">願望：叶うでしょう<br>待人：来ます</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-ema" class="hidden">
+            <h2>願いを込める 絵馬奉納</h2>
+            <div class="ema-editor">
+                <div class="input-group">
+                    <label>願い事</label>
+                    <input type="text" id="ema-wish" placeholder="例：家内安全" maxlength="10">
+                </div>
+                <div class="input-group">
+                    <label>お名前</label>
+                    <input type="text" id="ema-name" placeholder="例：真似亞 太郎" maxlength="8">
+                </div>
+                <button id="btn-create-ema">絵馬を作成する</button>
+            </div>
+
+            <div class="canvas-wrapper">
+                <canvas id="ema-canvas" width="400" height="300"></canvas>
+            </div>
+            <button id="btn-download-ema" class="secondary-btn">画像を保存する</button>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <button onclick="switchTab('section-home')">🏠 本殿</button>
+        <button onclick="switchTab('section-omikuji')">🥠 おみくじ</button>
+        <button onclick="switchTab('section-ema')">🐴 絵馬</button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
