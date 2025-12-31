@@ -2,26 +2,18 @@
    1. タブ切り替え機能
    ================================ */
 function switchTab(sectionId) {
-    // 全てのセクションを隠す
     const sections = document.querySelectorAll('main section');
     sections.forEach(sec => sec.classList.add('hidden'));
-
-    // 指定されたセクションを表示
     const target = document.getElementById(sectionId);
-    if (target) {
-        target.classList.remove('hidden');
-    }
+    if (target) target.classList.remove('hidden');
 }
 
 /* ================================
    2. カウントダウン機能
    ================================ */
 function startCountdown() {
-    // 次の1月1日を設定
     const now = new Date();
-    let nextYear = now.getFullYear() + 1;
-    // もし現在が1月1日なら、来年ではなく今年の終わりに設定するなど調整可能
-    // ここではシンプルに「次の年の1月1日」を目指します
+    const nextYear = now.getFullYear() + 1;
     const targetDate = new Date(nextYear, 0, 1, 0, 0, 0).getTime();
 
     const timer = setInterval(() => {
@@ -45,102 +37,235 @@ function startCountdown() {
         document.getElementById('seconds').innerText = String(s).padStart(2, '0');
     }, 1000);
 }
-
 startCountdown();
 
 /* ================================
-   3. おみくじ機能
+   3. 除夜の鐘ゲーム (NEW!)
+   ================================ */
+let kaneScore = 0;
+let kaneTime = 10;
+let kaneTimerInterval;
+let isGamePlaying = false;
+
+// ハイスコアの読み込み
+const savedScore = localStorage.getItem('kaneHighScore');
+if(savedScore) {
+    document.getElementById('kane-highscore').innerText = savedScore;
+}
+
+const btnHitKane = document.getElementById('btn-hit-kane');
+const bellVisual = document.getElementById('bell-visual');
+const displayScore = document.getElementById('kane-score');
+const displayTime = document.getElementById('kane-time');
+
+// ゲーム開始
+document.getElementById('btn-start-kane').addEventListener('click', () => {
+    if(isGamePlaying) return;
+    
+    // リセット
+    kaneScore = 0;
+    kaneTime = 10;
+    isGamePlaying = true;
+    displayScore.innerText = kaneScore;
+    displayTime.innerText = kaneTime;
+    btnHitKane.disabled = false; // ボタン有効化
+    
+    // タイマースタート
+    kaneTimerInterval = setInterval(() => {
+        kaneTime--;
+        displayTime.innerText = kaneTime;
+        if(kaneTime <= 0) {
+            finishKaneGame();
+        }
+    }, 1000);
+});
+
+// 鐘を打つ
+btnHitKane.addEventListener('click', () => {
+    if(!isGamePlaying) return;
+    kaneScore++;
+    displayScore.innerText = kaneScore;
+
+    // アニメーション演出
+    bellVisual.classList.remove('bell-hit-anim');
+    void bellVisual.offsetWidth; // リフロー発生
+    bellVisual.classList.add('bell-hit-anim');
+    
+    // 効果音を入れるならここで playAudio();
+});
+
+// ゲーム終了処理
+function finishKaneGame() {
+    clearInterval(kaneTimerInterval);
+    isGamePlaying = false;
+    btnHitKane.disabled = true;
+
+    // ハイスコア更新判定
+    const currentHigh = parseInt(localStorage.getItem('kaneHighScore') || '0');
+    if(kaneScore > currentHigh) {
+        localStorage.setItem('kaneHighScore', kaneScore);
+        document.getElementById('kane-highscore').innerText = kaneScore;
+        alert(`新記録！ ${kaneScore}回突きました！\n煩悩が吹き飛びました！`);
+    } else {
+        alert(`終了！ ${kaneScore}回突きました。`);
+    }
+}
+
+/* ================================
+   4. おみくじ機能 (Canvas画像生成版)
    ================================ */
 const omikujiResults = [
-    { type: '大吉', detail: '願い事：思うがままに叶うでしょう' },
-    { type: '中吉', detail: '待ち人：音信あり 来る' },
-    { type: '小吉', detail: '学問：安心して勉強せよ' },
-    { type: '吉', detail: '商売：利益あり 騒ぐな' },
-    { type: '凶', detail: '健康：養生せよ' }
+    { type: '大吉', detail: '願望：思うがまま' },
+    { type: '中吉', detail: '待人：来るでしょう' },
+    { type: '小吉', detail: '学問：油断大敵' },
+    { type: '吉', detail: '商売：焦らずとも良し' },
+    { type: '凶', detail: '健康：夜更かし禁止' }
 ];
 
+const omiCanvas = document.getElementById('omikuji-canvas');
+const omiCtx = omiCanvas.getContext('2d');
+
+function drawOmikujiCanvas(result) {
+    // 背景（和紙っぽい色）
+    omiCtx.fillStyle = '#fffaf0';
+    omiCtx.fillRect(0, 0, omiCanvas.width, omiCanvas.height);
+
+    // 外枠（二重線）
+    omiCtx.strokeStyle = '#c9171e';
+    omiCtx.lineWidth = 5;
+    omiCtx.strokeRect(10, 10, omiCanvas.width - 20, omiCanvas.height - 20);
+    omiCtx.lineWidth = 1;
+    omiCtx.strokeRect(15, 15, omiCanvas.width - 30, omiCanvas.height - 30);
+
+    // タイトル
+    omiCtx.fillStyle = '#c9171e';
+    omiCtx.font = 'bold 20px "Noto Serif JP"';
+    omiCtx.textAlign = 'center';
+    omiCtx.fillText('真似亞神社 運勢', omiCanvas.width / 2, 50);
+
+    // 結果（大きく）
+    omiCtx.fillStyle = '#000';
+    omiCtx.font = 'bold 80px "Noto Serif JP"';
+    omiCtx.fillText(result.type, omiCanvas.width / 2, 160);
+
+    // 装飾線
+    omiCtx.beginPath();
+    omiCtx.moveTo(50, 190);
+    omiCtx.lineTo(250, 190);
+    omiCtx.strokeStyle = '#d4af37';
+    omiCtx.lineWidth = 3;
+    omiCtx.stroke();
+
+    // 詳細テキスト
+    omiCtx.font = '18px "Noto Serif JP"';
+    omiCtx.fillStyle = '#333';
+    omiCtx.fillText(result.detail, omiCanvas.width / 2, 240);
+    
+    // 日付
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}年1月1日`;
+    omiCtx.font = '14px "Noto Serif JP"';
+    omiCtx.fillStyle = '#666';
+    omiCtx.fillText(dateStr, omiCanvas.width / 2, 350);
+}
+
+// 引くボタン
 document.getElementById('btn-draw-omikuji').addEventListener('click', () => {
     const box = document.getElementById('omikuji-box');
-    const resultDiv = document.getElementById('omikuji-result');
-    const resultText = document.getElementById('result-text');
-    const resultDetail = document.getElementById('result-detail');
+    const resultArea = document.getElementById('omikuji-result-area');
+    const drawBtn = document.getElementById('btn-draw-omikuji');
 
-    // 簡易アニメーション
+    // アニメーション
     box.style.transform = 'rotate(20deg)';
     setTimeout(() => box.style.transform = 'rotate(-20deg)', 100);
     setTimeout(() => box.style.transform = 'rotate(0deg)', 200);
 
-    // ランダム抽選
+    // 抽選
     const random = Math.floor(Math.random() * omikujiResults.length);
     const result = omikujiResults[random];
 
-    // 結果表示
     setTimeout(() => {
-        resultText.innerText = result.type;
-        resultDetail.innerText = result.detail;
-        resultDiv.classList.remove('hidden');
+        // UI切り替え
+        box.classList.add('hidden');
+        drawBtn.classList.add('hidden');
+        resultArea.classList.remove('hidden');
+
+        // Canvas描画
+        drawOmikujiCanvas(result);
     }, 300);
 });
 
+// リトライボタン
+document.getElementById('btn-retry-omikuji').addEventListener('click', () => {
+    document.getElementById('omikuji-result-area').classList.add('hidden');
+    document.getElementById('omikuji-box').classList.remove('hidden');
+    document.getElementById('btn-draw-omikuji').classList.remove('hidden');
+});
+
+// DLボタン
+document.getElementById('btn-download-omikuji').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'omikuji_result.png';
+    link.href = omiCanvas.toDataURL();
+    link.click();
+});
+
+
 /* ================================
-   4. 絵馬作成機能 (Canvas)
+   5. 絵馬作成機能 (Canvas)
    ================================ */
-const canvas = document.getElementById('ema-canvas');
-const ctx = canvas.getContext('2d');
+const emaCanvas = document.getElementById('ema-canvas');
+const emaCtx = emaCanvas.getContext('2d');
 
-// 絵馬の初期描画
 function drawEma(wishText = '', nameText = '') {
-    // 1. 背景（木の板）を描画
-    ctx.fillStyle = '#f2d29b'; // 木の色
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // 背景
+    emaCtx.fillStyle = '#f2d29b';
+    emaCtx.fillRect(0, 0, emaCanvas.width, emaCanvas.height);
     
-    // 木枠の線
-    ctx.lineWidth = 10;
-    ctx.strokeStyle = '#8c5e26';
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    // 枠
+    emaCtx.lineWidth = 10;
+    emaCtx.strokeStyle = '#8c5e26';
+    emaCtx.strokeRect(0, 0, emaCanvas.width, emaCanvas.height);
 
-    // 紐（赤）
-    ctx.beginPath();
-    ctx.moveTo(canvas.width / 2, 0);
-    ctx.lineTo(canvas.width / 2, 40);
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = '#c9171e';
-    ctx.stroke();
+    // 紐
+    emaCtx.beginPath();
+    emaCtx.moveTo(emaCanvas.width / 2, 0);
+    emaCtx.lineTo(emaCanvas.width / 2, 40);
+    emaCtx.lineWidth = 5;
+    emaCtx.strokeStyle = '#c9171e';
+    emaCtx.stroke();
 
     // 神社名
-    ctx.fillStyle = '#000';
-    ctx.font = '20px "Noto Serif JP"';
-    ctx.textAlign = 'right';
-    ctx.fillText('真似亞神社', canvas.width - 20, canvas.height - 20);
+    emaCtx.fillStyle = '#000';
+    emaCtx.font = '20px "Noto Serif JP"';
+    emaCtx.textAlign = 'right';
+    emaCtx.fillText('真似亞神社', emaCanvas.width - 20, emaCanvas.height - 20);
 
-    // 2. ユーザーの入力テキスト描画
-    ctx.fillStyle = '#000';
-    ctx.textAlign = 'center';
-    
-    // 願い事（大きく）
-    ctx.font = 'bold 40px "Noto Serif JP"';
-    ctx.fillText(wishText, canvas.width / 2, 140);
+    // テキスト
+    emaCtx.fillStyle = '#000';
+    emaCtx.textAlign = 'center';
+    emaCtx.font = 'bold 40px "Noto Serif JP"';
+    emaCtx.fillText(wishText, emaCanvas.width / 2, 140);
 
-    // 名前（少し小さく）
-    ctx.font = '24px "Noto Serif JP"';
-    ctx.textAlign = 'left';
-    ctx.fillText(nameText ? `奉納：${nameText}` : '', 40, 240);
+    emaCtx.font = '24px "Noto Serif JP"';
+    emaCtx.textAlign = 'left';
+    emaCtx.fillText(nameText ? `奉納：${nameText}` : '', 40, 240);
 }
 
-// 初期状態を描画
+// 初期描画
 drawEma('願い事を入力', '');
 
-// 作成ボタンクリック時
+// 作成ボタン
 document.getElementById('btn-create-ema').addEventListener('click', () => {
     const wish = document.getElementById('ema-wish').value || '願い事なし';
     const name = document.getElementById('ema-name').value || '匿名';
     drawEma(wish, name);
 });
 
-// ダウンロード機能
+// DLボタン
 document.getElementById('btn-download-ema').addEventListener('click', () => {
     const link = document.createElement('a');
     link.download = 'ema_maniea_shrine.png';
-    link.href = canvas.toDataURL();
+    link.href = emaCanvas.toDataURL();
     link.click();
 });
